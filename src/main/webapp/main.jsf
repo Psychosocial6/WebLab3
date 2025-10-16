@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <meta charset="UTF-8"/>
+    <title>WebLab3</title>
+    <h:outputStylesheet library="css" name="styles.css"/>
+    <h:outputScript library="js" name="script.js"/>
+</h:head>
+
+<h:body>
+    <header>
+        <h1></h1>
+    </header>
+
+    <main>
+        <h:form id="mainForm">
+            <div class="container">
+                <div class="top-row">
+                    <div class="block">
+                        <fieldset>
+                            <legend>Изменение X</legend>
+                            <h:inputText id="x_display" value="#{pointBean.x}" readonly="true" style="border:0; font-weight:bold;"/>
+                            <p:slider for="x_display" minValue="-5" maxValue="5" step="0.1"/>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Изменение Y</legend>
+                            <p:inputText id="y_text" value="#{pointBean.y}" required="true"
+                                         requiredMessage="Поле Y не может быть пустым"
+                                         placeholder="Значение Y (от -3 до 3)">
+                                <f:validateDoubleRange minimum="-3" maximum="3"/>
+                                <p:keyFilter regEx="/[\\d\\-\\.]/"/>
+                            </p:inputText>
+                            <h:message for="y_text" style="color: red;"/>
+                        </fieldset>
+
+                        <fieldset>
+                            <legend>Изменение R</legend>
+                            <div class="r-buttons">
+                                <p:commandButton value="1" type="button" update="graph-panel, mainForm:results-table" oncomplete="redrawGraph();"
+                                                 styleClass="#{pointBean.r == 1 ? 'active-button' : ''}">
+                                    <f:setPropertyActionListener target="#{pointBean.r}" value="1"/>
+                                </p:commandButton>
+                                <p:commandButton value="2" type="button" update="graph-panel, mainForm:results-table" oncomplete="redrawGraph();"
+                                                 styleClass="#{pointBean.r == 2 ? 'active-button' : ''}">
+                                    <f:setPropertyActionListener target="#{pointBean.r}" value="2"/>
+                                </p:commandButton>
+                                <p:commandButton value="3" type="button" update="graph-panel, mainForm:results-table" oncomplete="redrawGraph();"
+                                                 styleClass="#{pointBean.r == 3 ? 'active-button' : ''}">
+                                    <f:setPropertyActionListener target="#{pointBean.r}" value="3"/>
+                                </p:commandButton>
+                                <p:commandButton value="4" type="button" update="graph-panel, mainForm:results-table" oncomplete="redrawGraph();"
+                                                 styleClass="#{pointBean.r == 4 ? 'active-button' : ''}">
+                                    <f:setPropertyActionListener target="#{pointBean.r}" value="4"/>
+                                </p:commandButton>
+                                <p:commandButton value="5" type="button" update="graph-panel, mainForm:results-table" oncomplete="redrawGraph();"
+                                                 styleClass="#{pointBean.r == 5 ? 'active-button' : ''}">
+                                    <f:setPropertyActionListener target="#{pointBean.r}" value="5"/>
+                                </p:commandButton>
+                            </div>
+                        </fieldset>
+
+                        <div class="button-panel">
+                            <p:commandButton value="Проверить" action="#{pointBean.check}"
+                                             update="graph-panel results-table" oncomplete="redrawGraph();"/>
+
+                            <p:commandButton value="Очистить таблицу" action="#{historyBean.clearHistory}"
+                                             update="graph-panel results-table" process="@this" oncomplete="redrawGraph();">
+                                <p:confirm header="Подтверждение" message="Вы уверены, что хотите очистить таблицу?" icon="pi pi-exclamation-triangle"/>
+                            </p:commandButton>
+                        </div>
+
+                        <h:inputHidden id="svg_y" value="#{pointBean.y}"/>
+                        <h:inputHidden id="svg_x" value="#{pointBean.x}"/>
+                        <p:remoteCommand name="sendSvgPoint" action="#{pointBean.check}"
+                                         update="graph-panel results-table" oncomplete="redrawGraph();" />
+                    </div>
+
+                    <h:panelGroup id="graph-panel" layout="block" styleClass="block">
+                        <svg id="image" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" onclick="image_click(event)">
+                            <line x1="25" x2="375" y1="200" y2="200" stroke="#334155"/>
+                            <line x1="200" x2="200" y1="25" y2="375" stroke="#334155"/>
+                            <polygon points="380,200 375,195 375, 205" fill="#334155" stroke="#334155"/>
+                            <polygon points="200,20 205,25 195,25" fill="#334155" stroke="#334155"/>
+
+                            <line x1="350" x2="350" y1="205" y2="195" stroke="#334155"/>
+                            <line x1="275" x2="275" y1="205" y2="195" stroke="#334155"/>
+                            <line x1="50" x2="50" y1="205" y2="195" stroke="#334155"/>
+                            <line x1="125" x2="125" y1="205" y2="195" stroke="#334155"/>
+                            <line x1="205" x2="195" y1="350" y2="350" stroke="#334155"/>
+                            <line x1="205" x2="195" y1="275" y2="275" stroke="#334155"/>
+                            <line x1="205" x2="195" y1="50" y2="50" stroke="#334155"/>
+                            <line x1="205" x2="195" y1="125" y2="125" stroke="#334155"/>
+
+                            <text x="380" y="215" stroke="#334155">X</text>
+                            <text x="185" y="20" stroke="#334155">Y</text>
+
+                            <rect height="75" width="150" x="50" y="200" fill-opacity="0.5" stroke="#3b82f6" fill="#3b82f6"/>
+                            <polygon points="125,200 200,200 200,125" fill-opacity="0.5" stroke="#3b82f6" fill="#3b82f6"/>
+                            <path d="M 200 200 L 275 200 A 75 75 0 0 0 200 125 Z" fill="#3b82f6" stroke="#3b82f6" fill-opacity="0.5"/>
+
+                            <text x="350" y="190" stroke="#334155" class="graph-label-r">R</text>
+                            <text x="275" y="190" stroke="#334155" class="graph-label-r-half">R/2</text>
+                            <text x="50" y="190" stroke="#334155" class="graph-label-neg-r">-R</text>
+                            <text x="125" y="190" stroke="#334155" class="graph-label-neg-r-half">-R/2</text>
+                            <text x="210" y="350" stroke="#334155" class="graph-label-neg-r">-R</text>
+                            <text x="210" y="275" stroke="#334155" class="graph-label-neg-r-half">-R/2</text>
+                            <text x="210" y="50" stroke="#334155" class="graph-label-r">R</text>
+                            <text x="210" y="125" stroke="#334155" class="graph-label-r-half">R/2</text>
+
+                            <ui:repeat value="#{historyBean.history}" var="res">
+                                <circle class="point" data-x="#{res.x}" data-y="#{res.y}" r="2" fill="#{res.result ? 'green' : 'red'}"/>
+                            </ui:repeat>
+                        </svg>
+                    </h:panelGroup>
+                </div>
+
+                <p:dataTable id="results-table" var="res" value="#{historyBean.history}" emptyMessage="Нет запросов">
+                    <p:column headerText="X">
+                        <h:outputText value="#{res.x}" />
+                    </p:column>
+                    <p:column headerText="Y">
+                        <h:outputText value="#{res.y}" />
+                    </p:column>
+                    <p:column headerText="R">
+                        <h:outputText value="#{res.r}" />
+                    </p:column>
+                    <p:column headerText="Результат">
+                        <h:outputText value="#{res.result ? 'Попадание' : 'Промах'}" />
+                    </p:column>
+                    <p:column headerText="Время выполнения, мс">
+                        <h:outputText value="#{res.requestTime}" />
+                    </p:column>
+                    <p:column headerText="Время запроса">
+                        <h:outputText value="#{res.localTime}" />
+                    </p:column>
+                </p:dataTable>
+            </div>
+
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Да" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="Нет" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>
+        </h:form>
+    </main>
+
+
+</h:body>
+</html>
