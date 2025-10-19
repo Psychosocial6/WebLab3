@@ -3,15 +3,15 @@ package beans;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Named;
 
-@RequestScoped
 @Named("navigationBean")
+@RequestScoped
 public class NavigationBean {
 
-    public String redirectMain() {
-        return "main.jsf?faces-redirect=true";
+    public String navigateMain() {
+        return "go-main";
     }
 
-    public String redirectBack() {
-        return "index?faces-redirect=true";
+    public String navigateIndex() {
+        return "go-index";
     }
 }

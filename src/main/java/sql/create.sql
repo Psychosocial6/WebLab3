@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS results (
-    id SERIAL PRIMARY KEY,
-    x DECIMAL NOT NULL,
-    y DECIMAL NOT NULL,
-    r DECIMAL NOT NULL,
-    result BOOLEAN NOT NULL,
-    requestTime DECIMAL NOT NULL,
-    localTime TIMESTAMP
-);

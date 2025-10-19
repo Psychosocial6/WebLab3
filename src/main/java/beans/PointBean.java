@@ -1,19 +1,18 @@
 package beans;
 
-import jakarta.enterprise.context.RequestScoped;
+import entities.ResultEntity;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import objects.Result;
 import utils.AreaHitChecker;
-import utils.Validator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @Named("pointBean")
-@RequestScoped
+@SessionScoped
 public class PointBean implements Serializable {
     private BigDecimal x;
     private BigDecimal y;
@@ -21,24 +20,30 @@ public class PointBean implements Serializable {
     private String type;
     private boolean result;
     private double requestTime;
-    private String localTime;
+    private LocalDateTime localTime;
 
     @Inject
     private HistoryBean historyBean;
 
+    @PostConstruct
+    public void init() {
+        setX(new BigDecimal(0));
+        setR(new BigDecimal(1));
+    }
+
     public void check() {
+        /*
         if (!Validator.validateData(x, y, r, type)) {
             return;
         }
+         */
         long startTime = System.nanoTime();
         result = AreaHitChecker.checkHit(x, y, r);
-        LocalDateTime time = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy");
-        localTime = time.format(formatter);
+        localTime = LocalDateTime.now();
         long endTime = System.nanoTime();
         requestTime = Math.round(((double) (endTime - startTime) / 1e6) * 1e6) / 1e6;
 
-        Result requestResult = new Result(x, y, r, result, requestTime, localTime);
+        ResultEntity requestResult = new ResultEntity(x, y, r, result, requestTime, localTime);
         historyBean.addResult(requestResult);
     }
 
@@ -66,11 +71,11 @@ public class PointBean implements Serializable {
         this.requestTime = requestTime;
     }
 
-    public String getLocalTime() {
+    public LocalDateTime getLocalTime() {
         return localTime;
     }
 
-    public void setLocalTime(String localTime) {
+    public void setLocalTime(LocalDateTime localTime) {
         this.localTime = localTime;
     }
 

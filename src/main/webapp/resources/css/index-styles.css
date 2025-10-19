@@ -1,8 +1,40 @@
 body {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     min-height: 100vh;
     background-color: #f4f7f9;
+    font-family: sans-serif;
+    margin: 0;
+}
+
+header h1 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+}
+
+.clock-and-date-container {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 20px;
+}
+
+.date-display {
+    font-size: 2em;
+    font-weight: bold;
+    color: #34495e;
+    min-width: 150px;
+    text-align: center;
 }
 
 .clock {
@@ -54,4 +86,18 @@ body {
     height: 80px;
     background-color: #e74c3c;
     transform: translateX(-50%);
+}
+
+.go-to-button {
+    padding: 5px 5px;
+    height: 50px;
+    width: 200px;
+    background-color: #6A8EE1;
+    border-radius: 5px;
+    border: none;
+    color: #FFFFFF;
+}
+
+.go-to-button:hover {
+    background-color: #587dcf;
 }
