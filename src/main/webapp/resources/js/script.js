@@ -1,4 +1,4 @@
-function restoreGraphStateAfterAjax() {
+function restore() {
     const svg = document.getElementById('image');
     if (!svg) return;
     const currentR = parseFloat(svg.getAttribute('data-r'));
@@ -74,7 +74,7 @@ function checkHit(x, y, r) {
     if (x >= 0 && y >= 0) {
         return (x <= r / 2) && (y <= -2 * x + r);
     } else if (x <= 0 && y >= 0) {
-        return (x*x + y*y) <= (r * r);
+        return (x*x + y*y) <= (r * r / 4);
     } else if (x <= 0 && y <= 0) {
         return (x >= -1 * r) && (y >= -1 * r / 2);
     }
@@ -135,7 +135,8 @@ function loadRFromStorage() {
         if (button) {
             button.click();
         }
-    } else {
+    }
+    else {
         const svg = document.getElementById('image');
         if (svg) {
             const initialR = parseFloat(svg.getAttribute('data-r'));

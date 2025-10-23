@@ -2,6 +2,11 @@ body {
     font-family: sans-serif;
     background-color: #f4f7f9;
     color: #334155;
+    background-image: url('#{resource["images:rastyapa.jpg"]}');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
 }
 
 header {
@@ -117,4 +122,14 @@ svg {
     display: flex;
     flex-direction: column;
     gap: 25px;
+}
+
+.y-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.y-text {
+    max-width: 250px;
 }

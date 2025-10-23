@@ -32,11 +32,6 @@ public class PointBean implements Serializable {
     }
 
     public void check() {
-        /*
-        if (!Validator.validateData(x, y, r, type)) {
-            return;
-        }
-         */
         long startTime = System.nanoTime();
         result = AreaHitChecker.checkHit(x, y, r);
         localTime = LocalDateTime.now();

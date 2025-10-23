@@ -31,16 +31,18 @@
                                 </p:slider>
                             </fieldset>
 
-                            <fieldset>
+                            <fieldset class="y-field">
                                 <legend>Изменение Y</legend>
-                                <p:inputText id="y_text" value="#{pointBean.y}" required="true"
+                                <!--сделать нормальную валидацию чтоб не ломалось при 3.0000...000001-->
+                                <p:inputText id="y_text" class="y-text" value="#{pointBean.y}" required="true"
                                              requiredMessage="Поле Y не может быть пустым"
+                                             validatorMessage="Значение Y должно быть от -3 до 3"
                                              placeholder="Значение Y (от -3 до 3)">
                                     <f:validateDoubleRange minimum="-3" maximum="3"/>
                                     <p:keyFilter mask="num"/>
-                                    <p:ajax event="keyup" process="@this" update="checkButton" />
+                                    <p:ajax event="keyup" process="@this" update="y_message checkButton" />
                                 </p:inputText>
-                                <h:message for="y_text" style="color: red;"/>
+                                <h:message id="y_message" for="y_text" style="color: red;"/>
                             </fieldset>
 
                             <fieldset>
@@ -68,7 +70,7 @@
                         </div>
 
                         <p:commandButton value="Назад" action="#{navigationBean.navigateIndex}" styleClass="navigation-button"
-                                         immediate="true" icon="pi pi-arrow-left" style="margin-top: 10px;"/>
+                                         immediate="true" style="margin-top: 10px;"/>
 
                         <h:inputHidden id="svg_x" value="#{pointBean.x}"/>
                         <h:inputHidden id="svg_y" value="#{pointBean.y}"/>
@@ -138,7 +140,7 @@
 
             <p:outputPanel id="point-renderer" deferred="true">
                 <h:outputScript>
-                    restoreGraphStateAfterAjax();
+                    restore();
                 </h:outputScript>
             </p:outputPanel>
 
