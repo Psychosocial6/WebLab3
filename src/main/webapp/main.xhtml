@@ -18,46 +18,45 @@
     </header>
 
     <main>
-        <h:form id="mainForm" class="input-form">
+        <h:form id="main-form" class="input-form">
             <div class="container">
                 <div class="top-row">
                     <div class="block">
                         <h:panelGroup styleClass="input-elements" id="input-group" layout="block">
                             <fieldset>
                                 <legend>Изменение X</legend>
-                                <h:inputText id="x_display" value="#{pointBean.x}" style="border:0; font-weight:bold;"/>
-                                <p:slider for="x_display" minValue="-5" maxValue="5" step="0.1">
-                                    <p:ajax event="slideEnd" process="x_display"/>
+                                <h:inputText id="x-display" value="#{pointBean.x}" style="border:0; font-weight:bold;"/>
+                                <p:slider for="x-display" minValue="-5" maxValue="5" step="0.1">
+                                    <p:ajax event="slideEnd" process="x-display"/>
                                 </p:slider>
                             </fieldset>
 
                             <fieldset class="y-field">
                                 <legend>Изменение Y</legend>
                                 <!--сделать нормальную валидацию чтоб не ломалось при 3.0000...000001-->
-                                <p:inputText id="y_text" class="y-text" value="#{pointBean.y}" required="true"
+                                <p:inputText id="y-text" class="y-text" value="#{pointBean.y}" required="true"
                                              requiredMessage="Поле Y не может быть пустым"
-                                             validatorMessage="Значение Y должно быть от -3 до 3"
                                              placeholder="Значение Y (от -3 до 3)">
-                                    <f:validateDoubleRange minimum="-3" maximum="3"/>
+                                    <f:validator validatorId="yValidator"/>
                                     <p:keyFilter mask="num"/>
-                                    <p:ajax event="keyup" process="@this" update="y_message checkButton" />
+                                    <p:ajax event="blur" process="@this" update="y-message check-button" />
                                 </p:inputText>
-                                <h:message id="y_message" for="y_text" style="color: red;"/>
+                                <h:message id="y-message" for="y-text" style="color: red;"/>
                             </fieldset>
 
                             <fieldset>
                                 <legend>Изменение R</legend>
                                 <h:panelGroup id="r-buttons-group" styleClass="r-buttons" layout="block">
-                                    <p:commandButton id="r-button-1" value="1" process="@this" update="mainForm:r-buttons-group" oncomplete="handleRChange(1.0)" styleClass="#{pointBean.r.doubleValue() == 1.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{1.0}"/></p:commandButton>
-                                    <p:commandButton id="r-button-2" value="2" process="@this" update="mainForm:r-buttons-group" oncomplete="handleRChange(2.0)" styleClass="#{pointBean.r.doubleValue() == 2.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{2.0}"/></p:commandButton>
-                                    <p:commandButton id="r-button-3" value="3" process="@this" update="mainForm:r-buttons-group" oncomplete="handleRChange(3.0)" styleClass="#{pointBean.r.doubleValue() == 3.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{3.0}"/></p:commandButton>
-                                    <p:commandButton id="r-button-4" value="4" process="@this" update="mainForm:r-buttons-group" oncomplete="handleRChange(4.0)" styleClass="#{pointBean.r.doubleValue() == 4.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{4.0}"/></p:commandButton>
-                                    <p:commandButton id="r-button-5" value="5" process="@this" update="mainForm:r-buttons-group" oncomplete="handleRChange(5.0)" styleClass="#{pointBean.r.doubleValue() == 5.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{5.0}"/></p:commandButton>
+                                    <p:commandButton id="r-button-1" value="1" process="@this" update="main-form:r-buttons-group" oncomplete="handleRChange(1.0)" styleClass="#{pointBean.r.doubleValue() == 1.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{1.0}"/></p:commandButton>
+                                    <p:commandButton id="r-button-2" value="2" process="@this" update="main-form:r-buttons-group" oncomplete="handleRChange(2.0)" styleClass="#{pointBean.r.doubleValue() == 2.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{2.0}"/></p:commandButton>
+                                    <p:commandButton id="r-button-3" value="3" process="@this" update="main-form:r-buttons-group" oncomplete="handleRChange(3.0)" styleClass="#{pointBean.r.doubleValue() == 3.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{3.0}"/></p:commandButton>
+                                    <p:commandButton id="r-button-4" value="4" process="@this" update="main-form:r-buttons-group" oncomplete="handleRChange(4.0)" styleClass="#{pointBean.r.doubleValue() == 4.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{4.0}"/></p:commandButton>
+                                    <p:commandButton id="r-button-5" value="5" process="@this" update="main-form:r-buttons-group" oncomplete="handleRChange(5.0)" styleClass="#{pointBean.r.doubleValue() == 5.0 ? 'active-button' : ''}"><f:setPropertyActionListener target="#{pointBean.r}" value="#{5.0}"/></p:commandButton>
                                 </h:panelGroup>
                             </fieldset>
                         </h:panelGroup>
                         <div class="button-panel">
-                            <p:commandButton id="checkButton" value="Проверить" action="#{pointBean.check}"
+                            <p:commandButton id="check-button" value="Проверить" action="#{pointBean.check}"
                                              disabled="#{pointBean.y == null}"
                                              process="input-group @this"
                                              update="results-table"
@@ -72,10 +71,10 @@
                         <p:commandButton value="Назад" action="#{navigationBean.navigateIndex}" styleClass="navigation-button"
                                          immediate="true" style="margin-top: 10px;"/>
 
-                        <h:inputHidden id="svg_x" value="#{pointBean.x}"/>
-                        <h:inputHidden id="svg_y" value="#{pointBean.y}"/>
+                        <h:inputHidden id="svg-x" value="#{pointBean.x}"/>
+                        <h:inputHidden id="svg-y" value="#{pointBean.y}"/>
                         <p:remoteCommand name="sendSvgPoint" action="#{pointBean.check}"
-                                         process="@this svg_x svg_y"
+                                         process="@this svg-x svg-y"
                                          oncomplete="window.location.reload();"/>
                     </div>
 
@@ -96,14 +95,14 @@
                             <polygon points="200,50 200,200 275,200" fill-opacity="0.5" stroke="#3b82f6" fill="#3b82f6"/>
                             <path d="M 200 200 L 125 200 A 75 75 0 0 1 200 125 Z" fill="#3b82f6" stroke="#3b82f6" fill-opacity="0.5"/>
 
-                            <line x1="350" x2="350" y1="205" y2="195" stroke="#334155"/><text id="graph-label-r-x" x="350" y="190" fill="#334155">R</text>
-                            <line x1="275" x2="275" y1="205" y2="195" stroke="#334155"/><text id="graph-label-r-div-2-x" x="275" y="190" fill="#334155">R/2</text>
-                            <line x1="50" x2="50" y1="205" y2="195" stroke="#334155"/><text id="graph-label-minus-r-x" x="50" y="190" fill="#334155">-R</text>
-                            <line x1="125" x2="125" y1="205" y2="195" stroke="#334155"/><text id="graph-label-minus-r-div-2-x" x="125" y="190" fill="#334155">-R/2</text>
-                            <line x1="205" x2="195" y1="350" y2="350" stroke="#334155"/><text id="graph-label-minus-r-y" x="210" y="350" fill="#334155">-R</text>
-                            <line x1="205" x2="195" y1="275" y2="275" stroke="#334155"/><text id="graph-label-minus-r-div-2-y" x="210" y="275" fill="#334155">-R/2</text>
-                            <line x1="205" x2="195" y1="50" y2="50" stroke="#334155"/><text id="graph-label-r-y" x="210" y="50" fill="#334155">R</text>
-                            <line x1="205" x2="195" y1="125" y2="125" stroke="#334155"/><text id="graph-label-r-div-2-y" x="210" y="125" fill="#334155">R/2</text>
+                            <line x1="350" x2="350" y1="205" y2="195" stroke="#334155"/><text id="xr" x="350" y="190" fill="#334155">R</text>
+                            <line x1="275" x2="275" y1="205" y2="195" stroke="#334155"/><text id="xr/2" x="275" y="190" fill="#334155">R/2</text>
+                            <line x1="50" x2="50" y1="205" y2="195" stroke="#334155"/><text id="x-r" x="50" y="190" fill="#334155">-R</text>
+                            <line x1="125" x2="125" y1="205" y2="195" stroke="#334155"/><text id="x-r/2" x="125" y="190" fill="#334155">-R/2</text>
+                            <line x1="205" x2="195" y1="350" y2="350" stroke="#334155"/><text id="y-r" x="210" y="350" fill="#334155">-R</text>
+                            <line x1="205" x2="195" y1="275" y2="275" stroke="#334155"/><text id="y-r/2" x="210" y="275" fill="#334155">-R/2</text>
+                            <line x1="205" x2="195" y1="50" y2="50" stroke="#334155"/><text id="yr" x="210" y="50" fill="#334155">R</text>
+                            <line x1="205" x2="195" y1="125" y2="125" stroke="#334155"/><text id="yr/2" x="210" y="125" fill="#334155">R/2</text>
                         </svg>
                     </h:panelGroup>
                 </div>

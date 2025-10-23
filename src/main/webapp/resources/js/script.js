@@ -1,24 +1,24 @@
 function restore() {
     const svg = document.getElementById('image');
     if (!svg) return;
-    const currentR = parseFloat(svg.getAttribute('data-r'));
-    if (isNaN(currentR)) return;
-    updateGraphLabels(currentR);
-    drawAllPoints(currentR);
+    const r = parseFloat(svg.getAttribute('data-r'));
+    if (isNaN(r)) return;
+    updateLabels(r);
+    drawAllPoints(r);
 }
 
-function handleRChange(newR) {
-    localStorage.setItem('rValue', newR);
+function handleRChange(r) {
+    localStorage.setItem('rValue', r);
     const svg = document.getElementById('image');
     if (svg) {
-        svg.setAttribute('data-r', newR);
+        svg.setAttribute('data-r', r);
     }
-    updateGraphLabels(newR);
-    repositionPoints(newR);
-    updatePointsColor(newR);
+    updateLabels(r);
+    repositionPoints(r);
+    updatePointsColor(r);
 }
 
-function drawAllPoints(currentR) {
+function drawAllPoints(r) {
     const svg = document.getElementById('image');
     const historyStorage = document.querySelector('.history-data-storage');
     if (!svg || !historyStorage) return;
@@ -29,12 +29,12 @@ function drawAllPoints(currentR) {
 
     const pointsData = JSON.parse(pointsDataJson);
     const scale = 150;
-    svg.querySelectorAll('.dynamic-point').forEach(point => point.remove());
+    svg.querySelectorAll('.click-point').forEach(point => point.remove());
 
     pointsData.forEach(point => {
-        const cx = 200 + (point.x / currentR) * scale;
-        const cy = 200 - (point.y / currentR) * scale;
-        const isHit = checkHit(point.x, point.y, currentR);
+        const cx = 200 + (point.x / r) * scale;
+        const cy = 200 - (point.y / r) * scale;
+        const isHit = checkHit(point.x, point.y, r);
         const color = isHit ? 'green' : 'red';
 
         const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -42,30 +42,30 @@ function drawAllPoints(currentR) {
         circle.setAttribute('cx', cx);
         circle.setAttribute('cy', cy);
         circle.setAttribute('fill', color);
-        circle.setAttribute('class', 'dynamic-point');
+        circle.setAttribute('class', 'click-point');
         circle.setAttribute('data-x', point.x);
         circle.setAttribute('data-y', point.y);
         svg.appendChild(circle);
     });
 }
 
-function repositionPoints(newR) {
+function repositionPoints(r) {
     const scale = 150;
-    document.querySelectorAll('.dynamic-point').forEach(point => {
+    document.querySelectorAll('.click-point').forEach(point => {
         const x = parseFloat(point.dataset.x);
         const y = parseFloat(point.dataset.y);
-        const cx = 200 + (x / newR) * scale;
-        const cy = 200 - (y / newR) * scale;
+        const cx = 200 + (x / r) * scale;
+        const cy = 200 - (y / r) * scale;
         point.setAttribute('cx', cx);
         point.setAttribute('cy', cy);
     });
 }
 
-function updatePointsColor(newR) {
-    document.querySelectorAll('.dynamic-point').forEach(point => {
+function updatePointsColor(r) {
+    document.querySelectorAll('.click-point').forEach(point => {
         const x = parseFloat(point.dataset.x);
         const y = parseFloat(point.dataset.y);
-        const isHit = checkHit(x, y, newR);
+        const isHit = checkHit(x, y, r);
         point.setAttribute('fill', isHit ? 'green' : 'red');
     });
 }
@@ -74,7 +74,7 @@ function checkHit(x, y, r) {
     if (x >= 0 && y >= 0) {
         return (x <= r / 2) && (y <= -2 * x + r);
     } else if (x <= 0 && y >= 0) {
-        return (x*x + y*y) <= (r * r / 4);
+        return (x ** 2 + y ** 2) <= (r ** 2 / 4);
     } else if (x <= 0 && y <= 0) {
         return (x >= -1 * r) && (y >= -1 * r / 2);
     }
@@ -102,34 +102,31 @@ function handleGraphClick(event) {
 
     const mathX = ((svgX - centerX) / scale) * rValue;
     const mathY = ((-(svgY - centerY)) / scale) * rValue;
-    document.getElementById('mainForm:svg_x').value = mathX.toFixed(3);
-    document.getElementById('mainForm:svg_y').value = mathY.toFixed(3);
+    document.getElementById('main-form:svg-x').value = mathX.toFixed(3);
+    document.getElementById('main-form:svg-y').value = mathY.toFixed(3);
 
     sendSvgPoint();
 }
 
-function updateGraphLabels(rValue) {
+function updateLabels(rValue) {
     if (isNaN(rValue) || rValue <= 0) return;
 
-    const r = rValue.toFixed(1);
-    const r_div_2 = (rValue / 2).toFixed(1);
+    document.getElementById('xr').textContent = rValue;
+    document.getElementById('xr/2').textContent = rValue / 2;
+    document.getElementById('x-r').textContent = -1 * rValue;
+    document.getElementById('x-r/2').textContent = -1 * rValue / 2;
 
-    document.getElementById('graph-label-r-x').textContent = r;
-    document.getElementById('graph-label-r-div-2-x').textContent = r_div_2;
-    document.getElementById('graph-label-minus-r-x').textContent = -r;
-    document.getElementById('graph-label-minus-r-div-2-x').textContent = -r_div_2;
-
-    document.getElementById('graph-label-r-y').textContent = r;
-    document.getElementById('graph-label-r-div-2-y').textContent = r_div_2;
-    document.getElementById('graph-label-minus-r-y').textContent = -r;
-    document.getElementById('graph-label-minus-r-div-2-y').textContent = -r_div_2;
+    document.getElementById('yr').textContent = rValue;
+    document.getElementById('yr/2').textContent = rValue / 2;
+    document.getElementById('y-r').textContent = -1 * rValue;
+    document.getElementById('y-r/2').textContent = -1 * rValue / 2;
 }
 
 function loadRFromStorage() {
     const savedR = localStorage.getItem('rValue');
     if (savedR) {
         const rValue = parseFloat(savedR);
-        const buttonId = `mainForm:r-button-${rValue}`;
+        const buttonId = `main-form:r-button-${rValue}`;
         const button = document.getElementById(buttonId);
 
         if (button) {
@@ -140,7 +137,7 @@ function loadRFromStorage() {
         const svg = document.getElementById('image');
         if (svg) {
             const initialR = parseFloat(svg.getAttribute('data-r'));
-            updateGraphLabels(initialR);
+            updateLabels(initialR);
         }
     }
 }
