@@ -25,10 +25,14 @@
                         <h:panelGroup styleClass="input-elements" id="input-group" layout="block">
                             <fieldset>
                                 <legend>Изменение X</legend>
-                                <h:inputText id="x-display" value="#{pointBean.x}" style="border:0; font-weight:bold;"/>
+                                <h:inputText id="x-display" value="#{pointBean.x}" style="border:0; font-weight:bold;">
+                                    <f:validator validatorId="xValidator"/>
+                                    <p:ajax event="blur" process="@this" update="x-message check-button" />
+                                </h:inputText>
                                 <p:slider for="x-display" minValue="-5" maxValue="5" step="0.1">
                                     <p:ajax event="slideEnd" process="x-display"/>
                                 </p:slider>
+                                <h:message id="x-message" for="x-display" style="color: red;"/>
                             </fieldset>
 
                             <fieldset class="y-field">
@@ -59,13 +63,27 @@
                             <p:commandButton id="check-button" value="Проверить" action="#{pointBean.check}"
                                              disabled="#{pointBean.y == null}"
                                              process="input-group @this"
-                                             update="results-table"
-                                             oncomplete="window.location.reload();"/>
+                                             update="history-data-storage results-table graph-panel point-renderer"
+                                             oncomplete="restore()"/>
 
-                            <p:commandButton value="Очистить таблицу" action="#{historyBean.clearHistory}"
-                                             process="@this"
-                                             oncomplete="if(#{!facesContext.isValidationFailed()}) window.location.reload();"
-                                             onclick="if (!confirm('Вы уверены, что хотите очистить таблицу?')) return false;"/>
+                            <p:commandButton value="Очистить таблицу"
+                                             type="button"
+                                             onclick="PF('confirm-dialog').show()"/>
+
+                            <p:confirmDialog id="confirm-dialog"
+                                             message="Вы уверены, что хотите очистить таблицу?"
+                                             header="Очистка"
+                                             severity="alert"
+                                             widgetVar="confirm-dialog">
+                                <p:commandButton value="Да"
+                                                 action="#{historyBean.clearHistory}"
+                                                 process="@this"
+                                                 oncomplete="PF('confirm-dialog').hide(); restore();"
+                                                 update="history-data-storage results-table graph-panel point-renderer"/>
+                                <p:commandButton value="Нет"
+                                                 onclick="PF('confirmDialog').hide()"
+                                                 type="button"/>
+                            </p:confirmDialog>
                         </div>
 
                         <p:commandButton value="Назад" action="#{navigationBean.navigateIndex}" styleClass="navigation-button"
@@ -74,8 +92,9 @@
                         <h:inputHidden id="svg-x" value="#{pointBean.x}"/>
                         <h:inputHidden id="svg-y" value="#{pointBean.y}"/>
                         <p:remoteCommand name="sendSvgPoint" action="#{pointBean.check}"
-                                         process="@this svg-x svg-y"
-                                         oncomplete="window.location.reload();"/>
+                                         update="history-data-storage results-table graph-panel point-renderer"
+                                         oncomplete="restore()"
+                                         process="@this svg-x svg-y"/>
                     </div>
 
                     <h:panelGroup id="graph-panel" layout="block" styleClass="block">
