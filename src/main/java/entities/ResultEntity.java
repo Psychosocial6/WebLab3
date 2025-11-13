@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.TimeZone;
 
 @Entity
 @Table(name = "results")
@@ -102,16 +105,21 @@ public class ResultEntity {
         return localTime.format(formatter);
     }
 
+    public String writeAsString(TimeZone timeZone) {
+        ZoneId userZoneId = timeZone.toZoneId();
+        ZonedDateTime serverTime = this.localTime.atZone(ZoneId.of("Europe/Moscow"));
+        ZonedDateTime userLocalTime = serverTime.withZoneSameInstant(userZoneId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd.MM.yyyy z");
+        return "X: " + x +
+                ",\n Y: " + y +
+                ",\n R: " + r +
+                ",\n Результат попадания: " + (result ? "Попадание" : "Промах") +
+                ",\n Время обработки запроса: " + requestTime + " ms" +
+                ",\n Дата отправления запроса: " + userLocalTime.format(formatter) + "\n\n";
+    }
+
     @Override
     public String toString() {
-        return "ResultEntity{" +
-                "id=" + id +
-                ", x=" + x +
-                ", y=" + y +
-                ", r=" + r +
-                ", result=" + result +
-                ", requestTime=" + requestTime +
-                ", localTime='" + localTime + '\'' +
-                '}';
+        return super.toString();
     }
 }

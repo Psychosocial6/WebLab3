@@ -14,6 +14,7 @@ import utils.DatabaseManager;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.TimeZone;
 
 @ApplicationScoped
 @Named("historyBean")
@@ -53,6 +54,20 @@ public class HistoryBean implements Serializable {
 
     public List<ResultEntity> getHistory() {
         return history;
+    }
+
+     public String getHistoryAsString(TimeZone timeZone) {
+        synchronized (history) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("История запросов:\n");
+            for (int i = 0; i < history.size(); i++) {
+                sb.append("№");
+                sb.append(i + 1);
+                sb.append("\n");
+                sb.append(history.get(i).writeAsString(timeZone));
+            }
+            return sb.toString();
+        }
     }
 
     public String getHistoryAsJson() {

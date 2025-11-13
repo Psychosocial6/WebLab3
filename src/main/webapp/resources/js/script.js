@@ -1,3 +1,12 @@
+function updateUserTimeZone() {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const hiddenInputId = 'main-form:user-timezone-hidden';
+    const hiddenInput = document.getElementById(hiddenInputId);
+    if (hiddenInput) {
+        hiddenInput.value = timeZone;
+    }
+}
+
 function restore() {
     const svg = document.getElementById('image');
     if (!svg) return;

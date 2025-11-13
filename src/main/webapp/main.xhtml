@@ -19,6 +19,51 @@
 
     <main>
         <h:form id="main-form" class="input-form">
+            <p:dialog header="Отправка отчета" styleClass="dialog" widgetVar="schedule-dialog" modal="true">
+
+                <p:panelGrid id="dialogContent" columns="3" >
+                    <p:outputLabel for="hours" value="Часы:"/>
+                    <p:inputText id="hours" value="#{scheduleBean.hours}" required="true" requiredMessage="Введите часы">
+                        <p:keyFilter mask="num"/>
+                        <f:validateLongRange minimum="0"/>
+                    </p:inputText>
+                    <p:message for="hours"/>
+
+                    <p:outputLabel for="minutes" value="Минуты:"/>
+                    <p:inputText id="minutes" value="#{scheduleBean.minutes}" required="true" requiredMessage="Введите минуты">
+                        <p:keyFilter mask="num"/>
+                        <f:validateLongRange minimum="0" maximum="59"/>
+                    </p:inputText>
+                    <p:message for="minutes"/>
+
+                    <p:outputLabel for="seconds" value="Секунды:"/>
+                    <p:inputText id="seconds" value="#{scheduleBean.seconds}" required="true" requiredMessage="Введите секунды">
+                        <p:keyFilter mask="num"/>
+                        <f:validateLongRange minimum="0" maximum="59"/>
+                    </p:inputText>
+                    <p:message for="seconds"/>
+
+                    <p:outputLabel for="email" value="Электронный адрес:"/>
+                    <p:inputText id="email" value="#{scheduleBean.email}" required="true" requiredMessage="Введите адрес">
+                        <f:validateRegex pattern="^[a-zA-Z0-9_!#$%&amp;’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"/>
+                    </p:inputText>
+                    <p:message for="email"/>
+                </p:panelGrid>
+
+                <div class="dialog-panel">
+                    <p:commandButton value="Сохранить"
+                                     styleClass="save"
+                                     action="#{scheduleBean.scheduleEmail}"
+                                     process="@this dialogContent main-form:user-timezone-hidden"
+                                     update="dialogContent"/>
+
+                    <p:commandButton value="Отмена"
+                                     styleClass="cancel"
+                                     type="button"
+                                     onclick="PF('schedule-dialog').hide()"/>
+                </div>
+
+            </p:dialog>
             <div class="container">
                 <div class="top-row">
                     <div class="block">
@@ -37,7 +82,6 @@
 
                             <fieldset class="y-field">
                                 <legend>Изменение Y</legend>
-                                <!--сделать нормальную валидацию чтоб не ломалось при 3.0000...000001-->
                                 <p:inputText id="y-text" class="y-text" value="#{pointBean.y}" required="true"
                                              requiredMessage="Поле Y не может быть пустым"
                                              placeholder="Значение Y (от -3 до 3)">
@@ -86,8 +130,13 @@
                             </p:confirmDialog>
                         </div>
 
+                        <h:inputHidden id="user-timezone-hidden" value="#{scheduleBean.userTimeZoneId}"/>
+                        <p:commandButton value="Отправить отчет"
+                                             type="button"
+                                             onclick="updateUserTimeZone(); PF('schedule-dialog').show();"/>
+
                         <p:commandButton value="Назад" action="#{navigationBean.navigateIndex}" styleClass="navigation-button"
-                                         immediate="true" style="margin-top: 10px;"/>
+                                             immediate="true"/>
 
                         <h:inputHidden id="svg-x" value="#{pointBean.x}"/>
                         <h:inputHidden id="svg-y" value="#{pointBean.y}"/>
@@ -133,22 +182,27 @@
                                 <f:convertNumber pattern="0.00"/>
                             </h:outputText>
                         </p:column>
+
                         <p:column headerText="Y">
                             <h:outputText value="#{res.y}">
                                 <f:convertNumber pattern="0.00"/>
                             </h:outputText>
                         </p:column>
+
                         <p:column headerText="R">
                             <h:outputText value="#{res.r}">
                                 <f:convertNumber pattern="0.00"/>
                             </h:outputText>
                         </p:column>
+
                         <p:column headerText="Результат">
                             <h:outputText value="#{res.result ? 'Попадание' : 'Промах'}" style="color: #{res.result ? 'green' : 'red'};" />
                         </p:column>
+
                         <p:column headerText="Время выполнения, мс">
                             <h:outputText value="#{res.requestTime}" />
                         </p:column>
+
                         <p:column headerText="Время запроса">
                             <h:outputText value="#{res.formattedLocalTime}" />
                         </p:column>
@@ -166,7 +220,11 @@
                           styleClass="history-data-storage">
                 <f:passThroughAttribute name="data-history" value="#{historyBean.historyAsJson}" />
             </h:panelGroup>
+
         </h:form>
+
     </main>
+
 </h:body>
+
 </html>
