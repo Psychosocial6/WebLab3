@@ -115,7 +115,7 @@ public class ResultEntity {
                 ",\n R: " + r +
                 ",\n Результат попадания: " + (result ? "Попадание" : "Промах") +
                 ",\n Время обработки запроса: " + requestTime + " ms" +
-                ",\n Дата отправления запроса: " + userLocalTime.format(formatter) + "\n\n";
+                ",\n Дата отправки запроса: " + userLocalTime.format(formatter) + "\n\n";
     }
 
     @Override

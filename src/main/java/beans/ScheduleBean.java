@@ -35,8 +35,8 @@ public class ScheduleBean implements Serializable {
         if (scheduler == null) {
             return;
         }
-        int totalDelayInSeconds = hours * 3600 + minutes * 60 + seconds;
-        if (totalDelayInSeconds <= 0) {
+        int delay = hours * 3600 + minutes * 60 + seconds;
+        if (delay <= 0) {
             return;
         }
 
@@ -47,19 +47,19 @@ public class ScheduleBean implements Serializable {
             JobDetail jobDetail = JobBuilder.newJob(ReportSendingJob.class)
                     .withIdentity(jobId, "email-group")
                     .usingJobData(ReportSendingJob.RECIPIENT_EMAIL_KEY, email)
-                    .usingJobData("historyData", historyBean.getHistoryAsString(TimeZone.getTimeZone(userTimeZoneId)))
+                    .usingJobData(ReportSendingJob.HISTORY_DATA, historyBean.getHistoryAsString(TimeZone.getTimeZone(userTimeZoneId)))
                     .build();
 
-            Date fireTime = DateBuilder.futureDate(totalDelayInSeconds, DateBuilder.IntervalUnit.SECOND);
+            Date startTime = DateBuilder.futureDate(delay, DateBuilder.IntervalUnit.SECOND);
 
             Trigger trigger = TriggerBuilder.newTrigger()
                     .withIdentity(triggerId, "email-group")
-                    .startAt(fireTime)
+                    .startAt(startTime)
                     .build();
 
             scheduler.scheduleJob(jobDetail, trigger);
 
-            PrimeFaces.current().executeScript("PF('scheduleDialogWidget').hide()");
+            PrimeFaces.current().executeScript("PF('schedule-dialog').hide()");
             resetForm();
 
         } catch (SchedulerException e) {

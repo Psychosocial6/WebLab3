@@ -6,6 +6,7 @@ import utils.EmailService;
 public class ReportSendingJob implements Job {
 
     public static final String RECIPIENT_EMAIL_KEY = "recipientEmail";
+    public static final String HISTORY_DATA = "historyData";
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -21,7 +22,7 @@ public class ReportSendingJob implements Job {
             }
 
             String subject = "Отчет о проверках точек";
-            String body = dataMap.getString("historyData");
+            String body = dataMap.getString(HISTORY_DATA);
 
             emailService.sendEmail(recipientEmail, subject, body);
 
